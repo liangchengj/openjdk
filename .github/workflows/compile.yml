@@ -45,7 +45,7 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: meyoustu/create-release@main
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
