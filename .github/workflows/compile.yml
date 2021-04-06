@@ -1,0 +1,65 @@
+name: JDK Compile
+
+on:
+  push:
+    branches: [ 11-dev ]
+  pull_request:
+    branches: [ 11-dev ]
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+
+    # Platforms to build on/for
+    strategy:
+      matrix:
+        # , ubuntu-latest, windows-latest
+        os: [ macos-latest ]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: prepare
+        if: startsWith(matrix.os, 'ubuntu')
+        run: sudo apt-get install build-essential libfreetype6-dev libcups2-dev libx11-dev libxext-dev libxrender-dev libxtst-dev libxt-dev libasound2-dev libffi-dev autoconf libx11-dev libxext-dev libxrender-dev libxrandr-dev libxtst-dev libxt-dev
+
+      - name: Configure
+        run: bash configure
+
+      - name: GNU Make
+        run: make images
+      - name: Verify your newly built JDK
+        run: ./build/*/images/jdk/bin/java -version
+
+      - name: Run Basic Tests
+        if: startsWith(matrix.os, 'ubuntu')
+        run: make run-test-tier1
+
+
+      - name: Package JDK for macOS
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          mv build/*/images/jdk-bundle/*.jdk ./
+          tar -cvJf jdk-11-macos.tar.xz ./*.jdk
+
+
+      - name: Create Release
+        id: create_release
+        uses: meyoustu/create-release@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: 11
+          release_name: JDK for macOS
+          body: Test GitHub Action
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./jdk-11-macos.tar.xz
+          asset_name: jdk-11-macos.tar.xz
+          asset_content_type: application/x-xz
