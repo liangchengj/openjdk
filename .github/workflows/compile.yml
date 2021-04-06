@@ -1,4 +1,4 @@
-name: JDK Compile
+name: Compile JDK
 
 on:
   push:
