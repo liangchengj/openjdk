@@ -19,15 +19,29 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: prepare
+      
+      - name: Change to root
+        run: su - root
+      
+      - name: Prepare
         if: startsWith(matrix.os, 'ubuntu')
         run: sudo apt-get install build-essential libfreetype6-dev libcups2-dev libx11-dev libxext-dev libxrender-dev libxtst-dev libxt-dev libasound2-dev libffi-dev autoconf libx11-dev libxext-dev libxrender-dev libxrandr-dev libxtst-dev libxt-dev libfontconfig1-dev
 
+      - name: Setup Java JDK
+        uses: actions/setup-java@v2.0.0
+        with:
+          # The Java version to set up. Takes a whole or semver Java version. See examples of supported syntax in README file
+          java-version: 11
+
       - name: Configure
         run: bash configure
-
+        
+      - name: See GCC Version
+        run: gcc --version
+        
       - name: GNU Make
         run: make images
+        
       - name: Verify your newly built JDK
         run: ./build/*/images/jdk/bin/java -version
 
