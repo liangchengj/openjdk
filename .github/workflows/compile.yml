@@ -37,9 +37,11 @@ jobs:
           java-version: 11
 
       - name: Configure for Windows
+        if: startsWith(matrix.os, 'windows')
         run: C:\tools\cygwin\bin\bash.exe configure
         
       - name: Configure for Linux or macOS
+        if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
         run: bash configure
         
       - name: See GCC Version
