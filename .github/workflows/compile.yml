@@ -74,7 +74,10 @@ jobs:
       - name: Configure for Windows
         if: startsWith(matrix.os, 'windows')
         run: |
-          cmd.exe /c C:\tools\cygwin\bin\bash.exe --login -o igncr "%cd%\configure" --with-toolchain-version=2017 --disable-warnings-as-errors
+          C:\tools\cygwin\bin\bash.exe --login
+          cd /cygdrive/d/a/openjdk/openjdk
+          bash configure --with-toolchain-version=2017 --disable-warnings-as-errors
+          exit
         
       - name: See GCC Version
         run: gcc --version
