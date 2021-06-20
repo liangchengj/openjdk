@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         # macos-latest, ubuntu-16.04
-        os: [ windows-2018 ]
+        os: [ windows-2016 ]
 
     steps:
       - name: Config Git for Windows
