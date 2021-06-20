@@ -29,7 +29,11 @@ jobs:
       
       - name: Prepare for Linux
         if: startsWith(matrix.os, 'ubuntu')
-        run: sudo apt-get install build-essential libfreetype6-dev libcups2-dev libx11-dev libxext-dev libxrender-dev libxtst-dev libxt-dev libasound2-dev libffi-dev autoconf libx11-dev libxext-dev libxrender-dev libxrandr-dev libxtst-dev libxt-dev libfontconfig1-dev
+        run: |
+          sudo apt-get install build-essential libfreetype6-dev libcups2-dev libx11-dev libxext-dev -y
+          sudo apt-get install libxrender-dev libxtst-dev libxt-dev libasound2-dev libffi-dev autoconf -y
+          sudo apt-get install libx11-dev libxext-dev libxrender-dev libxrandr-dev libxtst-dev libxt-dev libfontconfig1-dev -y
+        
 
       - name: Prepare for Windows
         if: startsWith(matrix.os, 'windows')
