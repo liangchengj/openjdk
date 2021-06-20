@@ -25,11 +25,11 @@ jobs:
             cmd.exe /c "C:\Program Files\Git\bin\git.exe" config --global core.autocrlf false
             cmd.exe /c "C:\Program Files\Git\bin\git.exe" config --global core.safecrlf true
       
-      - name: See Visual Studio 2017 files for Windows
+      - name: See Visual Studio 2019 files for Windows
         if: startsWith(matrix.os, 'windows')
         run: |
-          dir "C:\Program Files (x86)\Microsoft Visual Studio\2017"
-          tree "C:\Program Files (x86)\Microsoft Visual Studio\2017"
+          dir "C:\Program Files (x86)\Microsoft Visual Studio\2019"
+          tree "C:\Program Files (x86)\Microsoft Visual Studio\2019"
             
 #       - name:  Use Node.js
 #         if: startsWith(matrix.os, 'windows')
