@@ -19,6 +19,7 @@ jobs:
 
     steps:
       - name: Config Git for Windows
+        if: startsWith(matrix.os, 'windows')
         run: |
             cmd.exe /c "C:\Program Files\Git\bin\git.exe" config --global core.eol lf
             cmd.exe /c "C:\Program Files\Git\bin\git.exe" config --global core.autocrlf false
@@ -45,10 +46,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           # The Java version to set up. Takes a whole or semver Java version. See examples of supported syntax in README file
-          java-version: 8
+          java-version: 10
 
       - name: Configure for macOS or Linux
-        if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos')
+        if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
         run: bash configure
         
       - name: Configure for Windows
@@ -72,7 +73,7 @@ jobs:
           brew install tree
         
       - name: See macOS or Linux built files
-        if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos')
+        if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
         run: |
           ls -alF ./build
           tree ./build
@@ -85,7 +86,7 @@ jobs:
           
           
       - name: See macOS or Linux built images
-        if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos')
+        if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
         run: |
           ls -alF build/*/images
           tree build/*/images
