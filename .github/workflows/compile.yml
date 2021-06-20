@@ -14,8 +14,7 @@ jobs:
     # Platforms to build on/for
     strategy:
       matrix:
-        # macos-latest, ubuntu-16.04
-        os: [ windows-2016 ]
+        os: [ macos-10.14, ubuntu-16.04, windows-2016 ]
 
     steps:
       - name: Config Git for Windows
@@ -47,7 +46,8 @@ jobs:
         run: |
           sudo apt-get install build-essential libfreetype6-dev libcups2-dev libx11-dev libxext-dev -y
           sudo apt-get install libxrender-dev libxtst-dev libxt-dev libasound2-dev libffi-dev autoconf -y
-          sudo apt-get install libx11-dev libxext-dev libxrender-dev libxrandr-dev libxtst-dev libxt-dev libfontconfig1-dev -y
+          sudo apt-get install libx11-dev libxext-dev libxrender-dev libxrandr-dev -y
+          sudo apt-get install libxtst-dev libxt-dev libfontconfig1-dev -y
         
 
       - name: Prepare for Windows
@@ -58,13 +58,13 @@ jobs:
         with:
           platform: x64
           packages: autoconf make unzip zip
-      #######################################
-      #######################################
 
       - name: Setup Boot JDK
         uses: actions/setup-java@v1
         with:
-          # The Java version to set up. Takes a whole or semver Java version. See examples of supported syntax in README file
+          # The Java version to set up
+          # Takes a whole or semver Java version
+          # See examples of supported syntax in README file
           java-version: 10
 
       - name: Configure for macOS or Linux
@@ -74,7 +74,10 @@ jobs:
       - name: Configure for Windows
         if: startsWith(matrix.os, 'windows')
         run: |
-          cmd.exe /c C:\tools\cygwin\bin\bash.exe --login -i -c "cd /cygdrive/d/a/openjdk/openjdk && bash configure"
+          cmd.exe /c C:\tools\cygwin\bin\realpath.exe . > "%USERPROFILE%\p_path"
+          cmd.exe /c C:\tools\cygwin\bin\bash.exe --login -i -c "mv /cygdrive/c/Users/$(whoami)/p_path ~/"
+          cmd.exe /c C:\tools\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && bash configure"
+          cmd.exe /c C:\tools\cygwin\bin\bash.exe --login -i -c "rm -rf ~/p_path"
         
       - name: See GCC Version
         run: gcc --version
@@ -82,8 +85,13 @@ jobs:
       - name: GNU Make
         run: make all-images
         
-      - name: Verify newly built JDK
+      - name: Verify newly built JDK for macOS or Linux
+        if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
         run: ./build/*/images/jdk/bin/java -version
+        
+      - name: Verify newly built JDK for Windows
+        if: startsWith(matrix.os, 'windows')
+        run: .\build\*\images\jdk\bin\java -version
 
       - name: Install tree for macOS
         # find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
@@ -132,6 +140,12 @@ jobs:
         run: |
           mv build/*/images/jdk ./jdk-11.0.11
           tar -cvJf jdk-11-linux.tar.xz ./jdk-11.0.11
+          
+      - name: Package JDK for Windows
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          move build\*\images\jdk .\jdk-11.0.11
+          tar -cvf jdk-11-windows.tar .\jdk-11.0.11 && xz -zv9f jdk-11-windows.tar
 
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -142,5 +156,6 @@ jobs:
           files: |
             jdk-11-macos.tar.xz
             jdk-11-linux.tar.xz
+            jdk-11-windows.tar.xz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
