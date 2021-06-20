@@ -36,7 +36,10 @@ jobs:
           # The Java version to set up. Takes a whole or semver Java version. See examples of supported syntax in README file
           java-version: 11
 
-      - name: Configure
+      - name: Configure for Windows
+        run: C:\tools\cygwin\bin\bash.exe configure
+        
+      - name: Configure for Linux or macOS
         run: bash configure
         
       - name: See GCC Version
