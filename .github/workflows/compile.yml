@@ -50,17 +50,17 @@ jobs:
       - name: Verify newly built JDK
         run: ./build/*/images/jdk/bin/java -version
 
-      - name: See macOS built images
+      - name: See macOS built files
         if: startsWith(matrix.os, 'macos')
-        run: ls -alF ./build/*/images
+        run: tree ./build
         
-      - name: See Linux built images
+      - name: See Linux built files
         if: startsWith(matrix.os, 'ubuntu')
-        run: ls -alF ./build/*/images
+        run: tree ./build
         
-      - name: See Windows built images
+      - name: See Windows built files
         if: startsWith(matrix.os, 'windows')
-        run: dir .\build\*\images
+        run: tree .\build
 
 #       - name: Run Basic Tests
 #         if: startsWith(matrix.os, 'ubuntu')
