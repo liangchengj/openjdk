@@ -74,7 +74,7 @@ jobs:
       - name: Configure for Windows
         if: startsWith(matrix.os, 'windows')
         run: |
-          cmd.exe /c C:\tools\cygwin\bin\realpath.exe . > "%USERPROFILE%\p_path"
+          cmd.exe /c C:\tools\cygwin\bin\realpath.exe . > %USERPROFILE%\p_path
           cmd.exe /c C:\tools\cygwin\bin\bash.exe --login -i -c "mv /cygdrive/c/Users/$(whoami)/p_path ~/"
           cmd.exe /c C:\tools\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && bash configure"
           cmd.exe /c C:\tools\cygwin\bin\bash.exe --login -i -c "rm -rf ~/p_path"
