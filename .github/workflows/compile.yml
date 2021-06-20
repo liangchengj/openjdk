@@ -24,6 +24,12 @@ jobs:
             cmd.exe /c "C:\Program Files\Git\bin\git.exe" config --global core.eol lf
             cmd.exe /c "C:\Program Files\Git\bin\git.exe" config --global core.autocrlf false
             cmd.exe /c "C:\Program Files\Git\bin\git.exe" config --global core.safecrlf true
+      
+      - name: See Visual Studio files for Windows
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          dir "C:\Program Files (x86)\Microsoft Visual Studio"
+          tree "C:\Program Files (x86)\Microsoft Visual Studio"
             
 #       - name:  Use Node.js
 #         if: startsWith(matrix.os, 'windows')
