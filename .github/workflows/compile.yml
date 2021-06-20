@@ -48,7 +48,7 @@ jobs:
       - name: Configure for Windows
         if: startsWith(matrix.os, 'windows')
         run: |
-          cmd.exe /c C:\tools\cygwin\bin\bash.exe --login "%cd%\configure"
+          cmd.exe /c C:\tools\cygwin\bin\bash.exe --login -o igncr "%cd%\configure"
         
       - name: See GCC Version
         run: gcc --version
