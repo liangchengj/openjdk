@@ -36,7 +36,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           # The Java version to set up. Takes a whole or semver Java version. See examples of supported syntax in README file
-          java-version: 11
+          java-version: 8
 
       - name: Configure
         run: bash configure
@@ -45,7 +45,7 @@ jobs:
         run: gcc --version
         
       - name: GNU Make
-        run: make images
+        run: make all-images
         
       - name: Verify newly built JDK
         run: ./build/*/images/jdk/bin/java -version
