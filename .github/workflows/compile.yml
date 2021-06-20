@@ -10,16 +10,11 @@ jobs:
   build:
 
     runs-on: ${{ matrix.os }}
-    
-    if: startsWith(matrix.os, 'windows')
-    defaults:
-      run:
-        shell: C:\tools\cygwin\bin\bash.exe --login '{0}'
 
     # Platforms to build on/for
     strategy:
       matrix:
-        os: [  macos-latest, ubuntu-16.04, windows-latest ]
+        os: [  macos-latest, ubuntu-16.04 ]
 
     steps:
       - uses: actions/checkout@v2
