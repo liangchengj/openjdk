@@ -10,6 +10,11 @@ jobs:
   build:
 
     runs-on: ${{ matrix.os }}
+    
+    if: startsWith(matrix.os, 'windows')
+    defaults:
+      run:
+        shell: C:\tools\cygwin\bin\bash.exe --login '{0}'
 
     # Platforms to build on/for
     strategy:
@@ -38,12 +43,7 @@ jobs:
           # The Java version to set up. Takes a whole or semver Java version. See examples of supported syntax in README file
           java-version: 11
 
-      - name: Configure for Windows
-        if: startsWith(matrix.os, 'windows')
-        run: C:\tools\cygwin\bin\bash.exe --login configure --disable-warnings-as-errors --enable-debug --with-target-bits=64 --with-toolchain-version=2015
-        
-      - name: Configure for Linux or macOS
-        if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
+      - name: Configure
         run: bash configure
         
       - name: See GCC Version
