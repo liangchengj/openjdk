@@ -14,7 +14,8 @@ jobs:
     # Platforms to build on/for
     strategy:
       matrix:
-        os: [  macos-latest, ubuntu-16.04 ]
+        # macos-latest, ubuntu-16.04
+        os: [ windows-latest ]
 
     steps:
       - uses: actions/checkout@v2
@@ -31,6 +32,12 @@ jobs:
         with:
           platform: x64
           packages: autoconf make unzip zip
+      #######################################
+      #######################################
+      - if: startsWith(matrix.os, 'windows')
+        run: |
+          c:\tools\cygwin\cygwin.bat
+          cd openjdk
 
       - name: Setup Java JDK
         uses: actions/setup-java@v1
@@ -57,7 +64,7 @@ jobs:
           brew install tree
         
       - name: See macOS or Linux built files
-        if: startsWith(matrix.os, 'ubuntu')
+        if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos')
         run: |
           ls -alF ./build
           tree ./build
@@ -70,7 +77,7 @@ jobs:
           
           
       - name: See macOS or Linux built images
-        if: startsWith(matrix.os, 'ubuntu')
+        if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos')
         run: |
           ls -alF build/*/images
           tree build/*/images
