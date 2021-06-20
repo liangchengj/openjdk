@@ -25,15 +25,15 @@ jobs:
             cmd.exe /c "C:\Program Files\Git\bin\git.exe" config --global core.autocrlf false
             cmd.exe /c "C:\Program Files\Git\bin\git.exe" config --global core.safecrlf true
             
-      - name:  Use Node.js
-        if: startsWith(matrix.os, 'windows')
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14.x
+#       - name:  Use Node.js
+#         if: startsWith(matrix.os, 'windows')
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: 14.x
           
-      - name: Install Visual Studio 2017 for Windows
-        if: startsWith(matrix.os, 'windows')
-        run:  npm install --global windows-build-tools --vs2017
+#       - name: Install Visual Studio 2017 for Windows
+#         if: startsWith(matrix.os, 'windows')
+#         run:  npm install --global windows-build-tools --vs2017
     
       - uses: actions/checkout@v2
       
