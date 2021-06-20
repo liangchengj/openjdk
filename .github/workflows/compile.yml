@@ -40,7 +40,7 @@ jobs:
 
       - name: Configure for Windows
         if: startsWith(matrix.os, 'windows')
-        run: C:\tools\cygwin\bin\bash.exe --login configure
+        run: C:\tools\cygwin\bin\bash.exe --login configure --disable-warnings-as-errors --enable-debug --with-target-bits=64 --with-toolchain-version=2015
         
       - name: Configure for Linux or macOS
         if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
