@@ -37,7 +37,6 @@ jobs:
       - if: startsWith(matrix.os, 'windows')
         run: |
           c:\tools\cygwin\cygwin.bat
-          cd openjdk
 
       - name: Setup Java JDK
         uses: actions/setup-java@v1
