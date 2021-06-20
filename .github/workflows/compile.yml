@@ -18,6 +18,12 @@ jobs:
         os: [ windows-latest ]
 
     steps:
+      - name: Config Git for Windows
+        run: |
+          C:\Program Files\Git\bin\git.exe config --global core.eol lf
+          C:\Program Files\Git\bin\git.exe config --global core.autocrlf false
+          C:\Program Files\Git\bin\git.exe config --global core.safecrlf true
+    
       - uses: actions/checkout@v2
       
       - name: Prepare for Linux
