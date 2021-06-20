@@ -34,18 +34,23 @@ jobs:
           packages: autoconf make unzip zip
       #######################################
       #######################################
-      - if: startsWith(matrix.os, 'windows')
-        run: |
-          c:\tools\cygwin\cygwin.bat
 
-      - name: Setup Java JDK
+      - name: Setup Boot JDK
         uses: actions/setup-java@v1
         with:
           # The Java version to set up. Takes a whole or semver Java version. See examples of supported syntax in README file
           java-version: 8
 
-      - name: Configure
+      - name: Configure for macOS or Linux
+        if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos')
         run: bash configure
+        
+      - name: Configure for Windows
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          c:\tools\cygwin\cygwin.bat
+          bash configure
+          exit
         
       - name: See GCC Version
         run: gcc --version
