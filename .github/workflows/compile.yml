@@ -14,8 +14,8 @@ jobs:
     # Platforms to build on/for
     strategy:
       matrix:
-        # , ubuntu-latest, windows-latest
-        os: [ macos-latest ]
+        # macos-latest, ubuntu-latest, windows-latest
+        os: [ ubuntu-16.04 ]
 
     steps:
       - uses: actions/checkout@v2
@@ -53,24 +53,13 @@ jobs:
           mv build/*/images/jdk-bundle/*.jdk ./
           tar -cvJf jdk-11-macos.tar.xz ./*.jdk
 
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: feature_test
+          tag_name: feature_test
+          prerelease: true
+          files: |
+            jdk-11-macos.tar.xz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: 11
-          release_name: JDK for macOS
-          body: Test GitHub Action
-
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./jdk-11-macos.tar.xz
-          asset_name: jdk-11-macos.tar.xz
-          asset_content_type: application/x-xz
