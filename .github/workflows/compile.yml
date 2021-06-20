@@ -50,17 +50,36 @@ jobs:
       - name: Verify newly built JDK
         run: ./build/*/images/jdk/bin/java -version
 
-      - name: See macOS built files
+      - name: Install tree for macOS
+        # find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
         if: startsWith(matrix.os, 'macos')
-        run: tree ./build
+        run: |
+          brew install tree
         
-      - name: See Linux built files
+      - name: See macOS or Linux built files
         if: startsWith(matrix.os, 'ubuntu')
-        run: tree ./build
+        run: |
+          ls -alF ./build
+          tree ./build
         
       - name: See Windows built files
         if: startsWith(matrix.os, 'windows')
-        run: tree .\build
+        run: |
+          dir .\build
+          tree .\build
+          
+          
+      - name: See macOS or Linux built images
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          ls -alF build/*/images
+          tree build/*/images
+        
+      - name: See Windows built images
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          dir build\*\images
+          tree build\*\images
 
 #       - name: Run Basic Tests
 #         if: startsWith(matrix.os, 'ubuntu')
