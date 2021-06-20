@@ -20,9 +20,9 @@ jobs:
     steps:
       - name: Config Git for Windows
         run: |
-          "C:\Program Files\Git\bin\git.exe" config --global core.eol lf
-          "C:\Program Files\Git\bin\git.exe" config --global core.autocrlf false
-          "C:\Program Files\Git\bin\git.exe" config --global core.safecrlf true
+            cmd.exe /c "C:\Program Files\Git\bin\git.exe" config --global core.eol lf
+            cmd.exe /c "C:\Program Files\Git\bin\git.exe" config --global core.autocrlf false
+            cmd.exe /c "C:\Program Files\Git\bin\git.exe" config --global core.safecrlf true
     
       - uses: actions/checkout@v2
       
