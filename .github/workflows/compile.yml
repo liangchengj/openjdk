@@ -19,9 +19,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
-      - name: Prepare
+      - name: Prepare for Linux
         if: startsWith(matrix.os, 'ubuntu')
         run: sudo apt-get install build-essential libfreetype6-dev libcups2-dev libx11-dev libxext-dev libxrender-dev libxtst-dev libxt-dev libasound2-dev libffi-dev autoconf libx11-dev libxext-dev libxrender-dev libxrandr-dev libxtst-dev libxt-dev libfontconfig1-dev
+
+      - name: Prepare for Windows
+        if: startsWith(matrix.os, 'windows')
+        uses: egor-tensin/setup-cygwin@v3
+        with:
+          platform: x64
+          packages: autoconf make unzip zip
 
       - name: Setup Java JDK
         uses: actions/setup-java@v1
