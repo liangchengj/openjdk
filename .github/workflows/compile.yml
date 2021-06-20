@@ -52,11 +52,11 @@ jobs:
 
       - name: See macOS built images
         if: startsWith(matrix.os, 'macos')
-        run: ls -alF ./build/*/images
+        run: ls -alF ./build/*/images/jdk-bundle
         
       - name: See Linux built images
         if: startsWith(matrix.os, 'ubuntu')
-        run: ls -alF ./build/*/images
+        run: ls -alF ./build/*/images/jdk
         
       - name: See Windows built images
         if: startsWith(matrix.os, 'windows')
