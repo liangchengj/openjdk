@@ -29,7 +29,6 @@ jobs:
         if: startsWith(matrix.os, 'windows')
         run: |
           dir "C:\Program Files (x86)\Microsoft Visual Studio\2017"
-          tree "C:\Program Files (x86)\Microsoft Visual Studio\2017"
             
 #       - name:  Use Node.js
 #         if: startsWith(matrix.os, 'windows')
