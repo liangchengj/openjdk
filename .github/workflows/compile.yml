@@ -14,8 +14,7 @@ jobs:
     # Platforms to build on/for
     strategy:
       matrix:
-        # macos-latest, ubuntu-latest, windows-latest
-        os: [ ubuntu-16.04 ]
+        os: [  macos-latest, ubuntu-16.04, windows-latest ]
 
     steps:
       - uses: actions/checkout@v2
@@ -39,27 +38,45 @@ jobs:
       - name: GNU Make
         run: make images
         
-      - name: Verify your newly built JDK
+      - name: Verify newly built JDK
         run: ./build/*/images/jdk/bin/java -version
 
-      - name: Run Basic Tests
-        if: startsWith(matrix.os, 'ubuntu')
-        run: make run-test-tier1
-
-
-      - name: Package JDK for macOS
+      - name: See macOS built images
         if: startsWith(matrix.os, 'macos')
-        run: |
-          mv build/*/images/jdk-bundle/*.jdk ./
-          tar -cvJf jdk-11-macos.tar.xz ./*.jdk
+        run: ls -alF ./build/*/images
+        
+      - name: See Linux built images
+        if: startsWith(matrix.os, 'ubuntu')
+        run: ls -alF ./build/*/images
+        
+      - name: See Windows built images
+        if: startsWith(matrix.os, 'windows')
+        run: dir .\build\*\images
 
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          name: feature_test
-          tag_name: feature_test
-          prerelease: true
-          files: |
-            jdk-11-macos.tar.xz
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#       - name: Run Basic Tests
+#         if: startsWith(matrix.os, 'ubuntu')
+#         run: make run-test-tier1
+
+
+#       - name: Package JDK for macOS
+#         if: startsWith(matrix.os, 'macos')
+#         run: |
+#           mv build/*/images/jdk-bundle/*.jdk ./
+#           tar -cvJf jdk-11-macos.tar.xz ./*.jdk
+          
+#       - name: Package JDK for Linux
+#         if: startsWith(matrix.os, 'ubuntu')
+#         run: |
+#           mv build/*/images/jdk-bundle/*.jdk ./
+#           tar -cvJf jdk-11-macos.tar.xz ./*.jdk
+
+#       - name: Release
+#         uses: softprops/action-gh-release@v1
+#         with:
+#           name: feature_test
+#           tag_name: feature_test
+#           prerelease: true
+#           files: |
+#             jdk-11-macos.tar.xz
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
