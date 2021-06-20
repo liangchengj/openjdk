@@ -55,7 +55,7 @@ jobs:
       - name: Configure for Windows
         if: startsWith(matrix.os, 'windows')
         run: |
-          cmd.exe /c C:\tools\cygwin\bin\bash.exe --login -o igncr "%cd%\configure" --with-toolchain-version=2015
+          cmd.exe /c C:\tools\cygwin\bin\bash.exe --login -o igncr "%cd%\configure" --with-toolchain-version=2017  --with-tools-dir="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build"
         
       - name: See GCC Version
         run: gcc --version
