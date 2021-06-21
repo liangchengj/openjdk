@@ -37,8 +37,8 @@ jobs:
         if: startsWith(matrix.os, 'windows')
         run: |
           $client = new-object System.Net.WebClient
-          $client.DownloadFile('https://cygwin.com/setup-x86_64.exe', '.\setup-x86_64.exe')
-          cmd.exe /c '.\setup-x86_64.exe -s "https://mirrors.kernel.org/sourceware/cygwin/" -q -P autoconf -P make -P unzip -P zip'
+          $client.DownloadFile('https://cygwin.com/setup-x86_64.exe', '..\setup-x86_64.exe')
+          cmd.exe /c '..\setup-x86_64.exe -s "https://mirrors.kernel.org/sourceware/cygwin/" -q -P autoconf -P make -P unzip -P zip'
           $cygwin_dir = "C:\cygwin64"
           echo (Join-Path $cygwin_dir bin) >> $env:GITHUB_PATH
           echo (Join-Path $cygwin_dir usr local bin) >> $env:GITHUB_PATH
