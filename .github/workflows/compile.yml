@@ -19,9 +19,9 @@ jobs:
       - name: Config Git for Windows
         if: startsWith(matrix.os, 'windows')
         run: |
-          cmd.exe /c '"C:\Program Files\Git\bin\git.exe" config --global core.eol lf'
-          cmd.exe /c '"C:\Program Files\Git\bin\git.exe" config --global core.autocrlf false'
-          cmd.exe /c '"C:\Program Files\Git\bin\git.exe" config --global core.safecrlf true'
+          git config --global core.eol lf
+          git config --global core.autocrlf false
+          git config --global core.safecrlf true
 
       - uses: actions/checkout@v2
 
