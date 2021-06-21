@@ -21,24 +21,9 @@ jobs:
       - name: Config Git for Windows
         if: startsWith(matrix.os, 'windows')
         run: |
-            cmd.exe /c "C:\Program Files\Git\bin\git.exe" config --global core.eol lf
-            cmd.exe /c "C:\Program Files\Git\bin\git.exe" config --global core.autocrlf false
-            cmd.exe /c "C:\Program Files\Git\bin\git.exe" config --global core.safecrlf true
-      
-      - name: See Visual Studio 2017 files for Windows
-        if: startsWith(matrix.os, 'windows')
-        run: |
-          dir "C:\Program Files (x86)\Microsoft Visual Studio\2017"
-            
-#       - name:  Use Node.js
-#         if: startsWith(matrix.os, 'windows')
-#         uses: actions/setup-node@v2
-#         with:
-#           node-version: 14.x
-          
-#       - name: Install Visual Studio 2017 for Windows
-#         if: startsWith(matrix.os, 'windows')
-#         run:  npm install --global windows-build-tools --vs2017
+            cmd.exe /c '"C:\Program Files\Git\bin\git.exe" config --global core.eol lf'
+            cmd.exe /c '"C:\Program Files\Git\bin\git.exe" config --global core.autocrlf false'
+            cmd.exe /c '"C:\Program Files\Git\bin\git.exe" config --global core.safecrlf true'
     
       - uses: actions/checkout@v2
       
@@ -57,9 +42,7 @@ jobs:
           $client = new-object System.Net.WebClient
           $client.DownloadFile('https://cygwin.com/setup-x86_64.exe', '.\setup-x86_64.exe')
           cmd.exe /c '.\setup-x86_64.exe -s "https://mirrors.kernel.org/sourceware/cygwin/" -q -P autoconf -P make -P unzip -P zip'
-          New-Variable install_dir -Value 'C:\cygwin64' -Option Constant
-          echo (Join-Path $install_dir bin) >> $env:GITHUB_PATH
-          echo (Join-Path $install_dir usr local bin) >> $env:GITHUB_PATH
+          $env:GITHUB_PATH = $env:GITHUB_PATH + ";C:\cygwin64\bin"
 
       - name: Setup Boot JDK
         uses: actions/setup-java@v1
@@ -85,7 +68,7 @@ jobs:
         run: gcc --version
         
       - name: GNU Make
-        run: make all
+        run: make images
         
       - name: Install tree for macOS
         # find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
@@ -116,17 +99,15 @@ jobs:
         if: startsWith(matrix.os, 'windows')
         run: |
           dir .\build\*\images
-          dir .\build\*\images\images
           tree .\build\*\images
-          tree .\build\*\images\images
         
       - name: Verify newly built JDK for macOS or Linux
         if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
         run: ./build/*/images/jdk/bin/java -version
         
-      - name: Verify newly built JDK for Windows
-        if: startsWith(matrix.os, 'windows')
-        run: cmd.exe /c '.\build\*\images\jdk\bin\java -version'
+#       - name: Verify newly built JDK for Windows
+#         if: startsWith(matrix.os, 'windows')
+#         run: cmd.exe /c '.\build\*\images\jdk\bin\java -version'
 
 #       - name: Run Basic Tests
 #         if: startsWith(matrix.os, 'ubuntu')
@@ -150,6 +131,7 @@ jobs:
         run: |
           move build\*\images\jdk .\jdk-11.0.11
           tar -cvf jdk-11-windows.tar .\jdk-11.0.11 && xz -zv9f jdk-11-windows.tar
+          tar -cvf images_test_windows.tar .\build\*\images && xz -zv9f images_test_windows.tar
 
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -161,5 +143,6 @@ jobs:
             jdk-11-macos.tar.xz
             jdk-11-linux.tar.xz
             jdk-11-windows.tar.xz
+            images_test_windows.tar.xz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
