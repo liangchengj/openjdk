@@ -70,12 +70,6 @@ jobs:
       - name: GNU Make
         run: make images
         
-      - name: Install tree for macOS
-        # find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
-        if: startsWith(matrix.os, 'macos')
-        run: |
-          brew install tree
-        
       - name: Verify newly built JDK for macOS or Linux
         if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
         run: ./build/*/images/jdk/bin/java -version
