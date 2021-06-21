@@ -14,7 +14,8 @@ jobs:
     # Platforms to build on/for
     strategy:
       matrix:
-        os: [ macos-10.14, ubuntu-16.04, windows-2016 ]
+        # macos-10.14, ubuntu-16.04, 
+        os: [ windows-2016 ]
 
     steps:
       - name: Config Git for Windows
@@ -83,7 +84,7 @@ jobs:
         run: gcc --version
         
       - name: GNU Make
-        run: make all-images
+        run: make images
         
       - name: Install tree for macOS
         # find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
@@ -113,8 +114,10 @@ jobs:
       - name: See Windows built images
         if: startsWith(matrix.os, 'windows')
         run: |
-          dir build\*\images
-          tree build\*\images
+          dir .\build\*\images
+          dir .\build\*\images\images
+          tree .\build\*\images
+          tree .\build\*\images\images
         
       - name: Verify newly built JDK for macOS or Linux
         if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
