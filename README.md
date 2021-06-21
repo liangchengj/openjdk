@@ -2,6 +2,8 @@
 Welcome to the JDK!
 ===================
 
+[![Compile JDK](https://github.com/LiangchengJ/openjdk/actions/workflows/compile.yml/badge.svg)](https://github.com/LiangchengJ/openjdk/actions/workflows/compile.yml)
+
 For information about building the JDK, including how to retrieve all
 of the source code, please see either of these files:
 
