@@ -53,12 +53,10 @@ jobs:
 
       - name: Prepare for Windows
         if: startsWith(matrix.os, 'windows')
-        uses: egor-tensin/setup-cygwin@v3
-        env:
-          SHELLOPTS: igncr
-        with:
-          platform: x64
-          packages: autoconf make unzip zip
+        run: |
+          $client = new-object System.Net.WebClient
+          $client.DownloadFile('https://cygwin.com/setup-x86_64.exe', '.\setup-x86_64.exe')
+          cmd.exe /c '.\setup-x86_64.exe -q -P autoconf -P make -P unzip -P zip'
 
       - name: Setup Boot JDK
         uses: actions/setup-java@v1
@@ -75,10 +73,10 @@ jobs:
       - name: Configure for Windows
         if: startsWith(matrix.os, 'windows')
         run: |
-          cmd.exe /c 'C:\tools\cygwin\bin\realpath.exe . > "%USERPROFILE%\p_path"'
-          cmd.exe /c 'C:\tools\cygwin\bin\bash.exe --login -i -c "mv /cygdrive/c/Users/$(whoami)/p_path ~/"'
-          cmd.exe /c 'C:\tools\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && bash configure"'
-          cmd.exe /c 'C:\tools\cygwin\bin\bash.exe --login -i -c "rm -rf ~/p_path"'
+          cmd.exe /c 'C:\cygwin64\bin\realpath.exe . > "%USERPROFILE%\p_path"'
+          cmd.exe /c 'C:\cygwin64\bin\bash.exe --login -i -c "mv /cygdrive/c/Users/$(whoami)/p_path ~/"'
+          cmd.exe /c 'C:\cygwin64\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && bash configure"'
+          cmd.exe /c 'C:\cygwin64\bin\bash.exe --login -i -c "rm -rf ~/p_path"'
         
       - name: See GCC Version
         run: gcc --version
