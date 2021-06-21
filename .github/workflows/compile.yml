@@ -14,8 +14,7 @@ jobs:
     # Platforms to build on/for
     strategy:
       matrix:
-        # macos-10.14, ubuntu-16.04, 
-        os: [ windows-2016 ]
+        os: [ macos-10.14, ubuntu-16.04, windows-2016 ]
 
     steps:
       - name: Config Git for Windows
@@ -64,7 +63,6 @@ jobs:
           cmd.exe /c 'C:\cygwin64\bin\realpath.exe . > "%USERPROFILE%\p_path"'
           cmd.exe /c 'C:\cygwin64\bin\bash.exe --login -i -c "mv /cygdrive/c/Users/$(whoami)/p_path ~/"'
           cmd.exe /c 'C:\cygwin64\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && bash configure"'
-          cmd.exe /c 'C:\cygwin64\bin\bash.exe --login -i -c "rm -rf ~/p_path"'
         
       - name: See GCC Version
         run: gcc --version
@@ -78,38 +76,13 @@ jobs:
         run: |
           brew install tree
         
-      - name: See macOS or Linux built files
-        if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
-        run: |
-          ls -alF ./build
-          tree ./build
-        
-      - name: See Windows built files
-        if: startsWith(matrix.os, 'windows')
-        run: |
-          dir .\build
-          tree .\build
-          
-          
-      - name: See macOS or Linux built images
-        if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
-        run: |
-          ls -alF build/*/images
-          tree build/*/images
-        
-      - name: See Windows built images
-        if: startsWith(matrix.os, 'windows')
-        run: |
-          dir .\build\*\images
-          tree .\build\*\images
-        
       - name: Verify newly built JDK for macOS or Linux
         if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
         run: ./build/*/images/jdk/bin/java -version
         
-#       - name: Verify newly built JDK for Windows
-#         if: startsWith(matrix.os, 'windows')
-#         run: cmd.exe /c '.\build\*\images\jdk\bin\java -version'
+      - name: Verify newly built JDK for Windows
+        if: startsWith(matrix.os, 'windows')
+        run: cmd.exe /c 'C:\cygwin64\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && ./build/*/images/jdk/bin/java -version"'
 
 #       - name: Run Basic Tests
 #         if: startsWith(matrix.os, 'ubuntu')
@@ -119,21 +92,20 @@ jobs:
       - name: Package JDK for macOS
         if: startsWith(matrix.os, 'macos')
         run: |
-          mv build/*/images/jdk-bundle/*.jdk ./
+          cp -rf build/*/images/jdk-bundle/*.jdk ./
           tar -cvJf jdk-11-macos.tar.xz ./*.jdk
           
       - name: Package JDK for Linux
         if: startsWith(matrix.os, 'ubuntu')
         run: |
-          mv build/*/images/jdk ./jdk-11.0.11
+          cp -rf build/*/images/jdk ./jdk-11.0.11
           tar -cvJf jdk-11-linux.tar.xz ./jdk-11.0.11
           
       - name: Package JDK for Windows
         if: startsWith(matrix.os, 'windows')
         run: |
-          move build\*\images\jdk .\jdk-11.0.11
-          tar -cvf jdk-11-windows.tar .\jdk-11.0.11 && xz -zv9f jdk-11-windows.tar
-          tar -cvf images_test_windows.tar .\build\*\images && xz -zv9f images_test_windows.tar
+          cmd.exe /c 'C:\cygwin64\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && cp -rf build/*/images/jdk ./jdk-11.0.11"'
+          cmd.exe /c 'C:\cygwin64\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && tar -cvJf jdk-11-windows.tar.xz ./jdk-11.0.11"'
 
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -142,9 +114,6 @@ jobs:
           tag_name: feature_test
           prerelease: true
           files: |
-            jdk-11-macos.tar.xz
-            jdk-11-linux.tar.xz
-            jdk-11-windows.tar.xz
-            images_test_windows.tar.xz
+            jdk-11-*.tar.xz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
