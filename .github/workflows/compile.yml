@@ -82,7 +82,7 @@ jobs:
         run: gcc --version
         
       - name: GNU Make
-        run: make images
+        run: make all
         
       - name: Install tree for macOS
         # find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
