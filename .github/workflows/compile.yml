@@ -57,7 +57,9 @@ jobs:
           $client = new-object System.Net.WebClient
           $client.DownloadFile('https://cygwin.com/setup-x86_64.exe', '.\setup-x86_64.exe')
           cmd.exe /c '.\setup-x86_64.exe -s "https://mirrors.kernel.org/sourceware/cygwin/" -q -P autoconf -P make -P unzip -P zip'
-          $env:path = "C:\cygwin64\bin;" + $env:path 
+          New-Variable install_dir -Value 'C:\cygwin64' -Option Constant
+          echo (Join-Path $install_dir bin) >> $env:GITHUB_PATH
+          echo (Join-Path $install_dir usr local bin) >> $env:GITHUB_PATH
 
       - name: Setup Boot JDK
         uses: actions/setup-java@v1
