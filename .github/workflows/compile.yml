@@ -1,0 +1,117 @@
+name: Compile JDK
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    tags:
+      - '*.*.*'
+
+# on:
+#   push:
+#     branches: [11-dev]
+#   pull_request:
+#     branches: [11-dev]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    # Platforms to build on/for
+    strategy:
+      matrix:
+        os: [macos-10.14, ubuntu-18.04, windows-2016]
+
+    steps:
+      - name: Config Git for Windows
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          git config --global core.eol lf
+          git config --global core.autocrlf false
+          git config --global core.safecrlf true
+
+      - uses: actions/checkout@v2
+
+      - name: Prepare for Linux
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          sudo apt-get install build-essential libfreetype6-dev libcups2-dev libx11-dev libxext-dev -y
+          sudo apt-get install libxrender-dev libxtst-dev libxt-dev libasound2-dev libffi-dev autoconf -y
+          sudo apt-get install libx11-dev libxext-dev libxrender-dev libxrandr-dev -y
+          sudo apt-get install libxtst-dev libxt-dev libfontconfig1-dev -y
+
+      - name: Prepare for Windows
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          $client = new-object System.Net.WebClient
+          $client.DownloadFile('https://cygwin.com/setup-x86_64.exe', '..\setup-x86_64.exe')
+          cmd.exe /c '..\setup-x86_64.exe -q -P autoconf -P make -P unzip -P zip -s "https://mirrors.kernel.org/sourceware/cygwin/" -R "C:\cygwin" -l "C:\CygwinPkg"'
+          $cygwin_dir = "C:\cygwin"
+          echo (Join-Path $cygwin_dir bin) >> $env:GITHUB_PATH
+          echo (Join-Path $cygwin_dir usr local bin) >> $env:GITHUB_PATH
+
+      - name: Setup Boot JDK
+        uses: actions/setup-java@v1
+        with:
+          # The Java version to set up
+          # Takes a whole or semver Java version
+          # See examples of supported syntax in README file
+          java-version: 10
+
+      - name: Configure for macOS or Linux
+        if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
+        run: bash configure
+
+      - name: Configure for Windows
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          cmd.exe /c 'C:\cygwin\bin\realpath.exe . > "%USERPROFILE%\p_path"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "mv /cygdrive/c/Users/$(whoami)/p_path ~/"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && bash configure"'
+
+      - name: See GCC Version
+        run: gcc --version
+
+      - name: GNU Make
+        run: make images
+
+      - name: Verify newly built JDK for macOS or Linux
+        if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
+        run: ./build/*/images/jdk/bin/java -version
+
+      - name: Verify newly built JDK for Windows
+        if: startsWith(matrix.os, 'windows')
+        run: cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && ./build/*/images/jdk/bin/java -version"'
+
+      #       - name: Run Basic Tests
+      #         if: startsWith(matrix.os, 'ubuntu')
+      #         run: make run-test-tier1
+
+      - name: Package JDK for macOS
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          cp -rf build/*/images/jdk-bundle/*.jdk ./
+          tar -cvJf jdk-11-macos.tar.xz ./*.jdk
+
+      - name: Package JDK for Linux
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          cp -rf build/*/images/jdk ./jdk-11.0.11
+          tar -cvJf jdk-11-linux.tar.xz ./jdk-11.0.11
+
+      - name: Package JDK for Windows
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && cp -rf build/*/images/jdk ./jdk-11.0.11"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && tar -cvJf jdk-11-windows.tar.xz ./jdk-11.0.11"'
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+#           name: feature_test
+#           tag_name: feature_test
+#           prerelease: true
+          files: |
+            jdk-11-*.tar.xz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
