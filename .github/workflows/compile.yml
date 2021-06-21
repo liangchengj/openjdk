@@ -85,14 +85,6 @@ jobs:
       - name: GNU Make
         run: make all-images
         
-      - name: Verify newly built JDK for macOS or Linux
-        if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
-        run: ./build/*/images/jdk/bin/java -version
-        
-      - name: Verify newly built JDK for Windows
-        if: startsWith(matrix.os, 'windows')
-        run: .\build\*\images\jdk\bin\java -version
-
       - name: Install tree for macOS
         # find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
         if: startsWith(matrix.os, 'macos')
@@ -123,6 +115,14 @@ jobs:
         run: |
           dir build\*\images
           tree build\*\images
+        
+      - name: Verify newly built JDK for macOS or Linux
+        if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
+        run: ./build/*/images/jdk/bin/java -version
+        
+      - name: Verify newly built JDK for Windows
+        if: startsWith(matrix.os, 'windows')
+        run: cmd.exe /c '.\build\*\images\jdk\bin\java -version'
 
 #       - name: Run Basic Tests
 #         if: startsWith(matrix.os, 'ubuntu')
