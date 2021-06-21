@@ -38,8 +38,8 @@ jobs:
         run: |
           $client = new-object System.Net.WebClient
           $client.DownloadFile('https://cygwin.com/setup-x86_64.exe', '..\setup-x86_64.exe')
-          cmd.exe /c '..\setup-x86_64.exe -q -P autoconf -P make -P unzip -P zip -l "C:\CygwinPkg" -s "https://mirrors.kernel.org/sourceware/cygwin/"'
-          $cygwin_dir = "C:\cygwin64"
+          cmd.exe /c '..\setup-x86_64.exe -q -P autoconf -P make -P unzip -P zip -s "https://mirrors.kernel.org/sourceware/cygwin/" -L "C:\cygwin" -l "C:\CygwinPkg"'
+          $cygwin_dir = "C:\cygwin"
           echo (Join-Path $cygwin_dir bin) >> $env:GITHUB_PATH
           echo (Join-Path $cygwin_dir usr local bin) >> $env:GITHUB_PATH
 
@@ -58,9 +58,9 @@ jobs:
       - name: Configure for Windows
         if: startsWith(matrix.os, 'windows')
         run: |
-          cmd.exe /c 'C:\cygwin64\bin\realpath.exe . > "%USERPROFILE%\p_path"'
-          cmd.exe /c 'C:\cygwin64\bin\bash.exe --login -i -c "mv /cygdrive/c/Users/$(whoami)/p_path ~/"'
-          cmd.exe /c 'C:\cygwin64\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && bash configure"'
+          cmd.exe /c 'C:\cygwin\bin\realpath.exe . > "%USERPROFILE%\p_path"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "mv /cygdrive/c/Users/$(whoami)/p_path ~/"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && bash configure"'
 
       - name: See GCC Version
         run: gcc --version
@@ -74,7 +74,7 @@ jobs:
 
       - name: Verify newly built JDK for Windows
         if: startsWith(matrix.os, 'windows')
-        run: cmd.exe /c 'C:\cygwin64\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && ./build/*/images/jdk/bin/java -version"'
+        run: cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && ./build/*/images/jdk/bin/java -version"'
 
       #       - name: Run Basic Tests
       #         if: startsWith(matrix.os, 'ubuntu')
@@ -95,8 +95,8 @@ jobs:
       - name: Package JDK for Windows
         if: startsWith(matrix.os, 'windows')
         run: |
-          cmd.exe /c 'C:\cygwin64\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && cp -rf build/*/images/jdk ./jdk-11.0.11"'
-          cmd.exe /c 'C:\cygwin64\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && tar -cvJf jdk-11-windows.tar.xz ./jdk-11.0.11"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && cp -rf build/*/images/jdk ./jdk-11.0.11"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && tar -cvJf jdk-11-windows.tar.xz ./jdk-11.0.11"'
 
       - name: Release
         uses: softprops/action-gh-release@v1
