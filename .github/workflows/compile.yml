@@ -68,7 +68,7 @@ jobs:
         run: |
           cmd.exe /c 'C:\cygwin\bin\realpath.exe . > "%USERPROFILE%\p_path"'
           cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "mv /cygdrive/c/Users/$(whoami)/p_path ~/"'
-          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && wget https://download.savannah.gnu.org/releases/freetype/freetype-2.5.3.tar.gz"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && curl -O -L https://download.savannah.gnu.org/releases/freetype/freetype-2.5.3.tar.gz"'
           cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && tar zxvf freetype-2.5.3.tar.gz"'
           cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && bash configure --with-freetype-src=$(cat ~/p_path)/freetype-2.5.3"'
 
