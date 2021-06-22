@@ -20,7 +20,8 @@ jobs:
     # Platforms to build on/for
     strategy:
       matrix:
-        os: [macos-10.14, ubuntu-18.04, windows-2016]
+        # macos-10.14, 
+        os: [ubuntu-18.04, windows-2016]
 
     steps:
       - name: Config Git for Windows
@@ -56,7 +57,7 @@ jobs:
           # The Java version to set up
           # Takes a whole or semver Java version
           # See examples of supported syntax in README file
-          java-version: 10
+          java-version: 7
 
       - name: Configure for macOS or Linux
         if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
