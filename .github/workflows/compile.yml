@@ -30,6 +30,11 @@ jobs:
           git config --global core.eol lf
           git config --global core.autocrlf false
           git config --global core.safecrlf true
+        
+      - name: Install Visual Studio Express 2010 for Windows
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          cmd.exe /c '7z.exe --help'
 
       - uses: actions/checkout@v2
 
