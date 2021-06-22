@@ -20,8 +20,8 @@ jobs:
     # Platforms to build on/for
     strategy:
       matrix:
-        # macos-10.14, 
-        os: [ubuntu-18.04, windows-2016]
+        # macos-10.14, ubuntu-18.04, 
+        os: [windows-2013]
 
     steps:
       - name: Config Git for Windows
