@@ -42,6 +42,7 @@ jobs:
           sudo apt-get install libxtst-dev libxt-dev libfontconfig1-dev -y
 
       - name: Prepare for Windows
+        # Cygwin Package Search: https://cygwin.com/cgi-bin2/package-grep.cgi
         if: startsWith(matrix.os, 'windows')
         run: |
           $client = new-object System.Net.WebClient
