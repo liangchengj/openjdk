@@ -70,8 +70,9 @@ jobs:
           cmd.exe /c 'C:\cygwin\bin\realpath.exe . > "%USERPROFILE%\p_path"'
           cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "mv /cygdrive/c/Users/$(whoami)/p_path ~/"'
           cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && mkdir freetype"'
-          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && curl -L -o freetype/freetype.dll https://github.com/ubawurinna/freetype-windows-binaries/raw/4456bfd4445e5bd71231f8addca8b78ab66099fb/win64/freetype.dll"'
-          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && curl -L -o freetype/freetype.lib https://github.com/ubawurinna/freetype-windows-binaries/raw/4456bfd4445e5bd71231f8addca8b78ab66099fb/win64/freetype.lib"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && curl -L -O https://github.com/ubawurinna/freetype-windows-binaries/releases/download/v2.10.1/freetype.zip"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && unzip -d freetype freetype.zip"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && cd freetype && mv win64 lib"'
           cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && bash configure --with-freetype=$(cat ~/p_path)/freetype"'
 
       - name: See GCC Version
