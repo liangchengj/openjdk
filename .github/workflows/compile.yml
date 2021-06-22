@@ -70,7 +70,7 @@ jobs:
           cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "mv /cygdrive/c/Users/$(whoami)/p_path ~/"'
           cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && wget https://download.savannah.gnu.org/releases/freetype/freetype-2.5.3.tar.gz"'
           cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && tar zxvf freetype-2.5.3.tar.gz"'
-          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && bash configure --with-freetype-src=~/freetype-2.5.3"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && bash configure --with-freetype-src=/home/$(whoami)/freetype-2.5.3"'
 
       - name: See GCC Version
         run: gcc --version
