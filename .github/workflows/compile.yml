@@ -47,7 +47,7 @@ jobs:
         run: |
           $client = new-object System.Net.WebClient
           $client.DownloadFile('https://cygwin.com/setup-x86_64.exe', '..\setup-x86_64.exe')
-          cmd.exe /c '..\setup-x86_64.exe -q -P autoconf -P make -P unzip -P zip -P gcc-g++ -P diffutils -s "https://mirrors.kernel.org/sourceware/cygwin/" -R "C:\cygwin" -l "C:\CygwinPkg"'
+          cmd.exe /c '..\setup-x86_64.exe -q -P autoconf -P make -P unzip -P zip -s "https://mirrors.kernel.org/sourceware/cygwin/" -R "C:\cygwin" -l "C:\CygwinPkg"'
           $cygwin_dir = "C:\cygwin"
           echo (Join-Path $cygwin_dir bin) >> $env:GITHUB_PATH
           echo (Join-Path $cygwin_dir usr local bin) >> $env:GITHUB_PATH
@@ -69,9 +69,10 @@ jobs:
         run: |
           cmd.exe /c 'C:\cygwin\bin\realpath.exe . > "%USERPROFILE%\p_path"'
           cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "mv /cygdrive/c/Users/$(whoami)/p_path ~/"'
-          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && curl -O -L https://download.savannah.gnu.org/releases/freetype/freetype-2.5.3.tar.gz"'
-          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && tar zxvf freetype-2.5.3.tar.gz"'
-          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && bash configure --with-freetype-src=$(cat ~/p_path)/freetype-2.5.3"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && mkdir freetype"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && curl -L -o freetype/freetype.dll https://github.com/ubawurinna/freetype-windows-binaries/raw/4456bfd4445e5bd71231f8addca8b78ab66099fb/win64/freetype.dll"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && curl -L -o freetype/freetype.lib https://github.com/ubawurinna/freetype-windows-binaries/raw/4456bfd4445e5bd71231f8addca8b78ab66099fb/win64/freetype.lib"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && bash configure --with-freetype=$(cat ~/p_path)/freetype"'
 
       - name: See GCC Version
         run: gcc --version
