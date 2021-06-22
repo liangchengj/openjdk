@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         # macos-10.14, ubuntu-18.04, 
-        os: [windows-2013]
+        os: [windows-2016]
 
     steps:
       - name: Config Git for Windows
@@ -73,7 +73,7 @@ jobs:
           cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && curl -L -O https://github.com/ubawurinna/freetype-windows-binaries/releases/download/v2.10.1/freetype.zip"'
           cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && unzip -d freetype freetype.zip"'
           cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && cd freetype && mv win64 lib"'
-          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && bash configure --with-freetype=$(cat ~/p_path)/freetype"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && bash configure --with-freetype=$(cat ~/p_path)/freetype --with-toolchain-version=2010"'
 
       - name: See GCC Version
         run: gcc --version
