@@ -20,7 +20,7 @@ jobs:
     # Platforms to build on/for
     strategy:
       matrix:
-        # macos-10.14, ubuntu-18.04, 
+        # macos-10.14, ubuntu-18.04,
         os: [windows-2016]
 
     steps:
@@ -30,14 +30,14 @@ jobs:
           git config --global core.eol lf
           git config --global core.autocrlf false
           git config --global core.safecrlf true
-        
+
       - name: Install Visual Studio Express 2010 for Windows
         if: startsWith(matrix.os, 'windows')
         run: |
           cmd.exe /c '"C:\Program Files\Git\bin\bash.exe" --login -i -c "curl -L -o ''en_visual_studio_2010_express_x86_dvd_510419.iso'' ''https://download.my.visualstudio.com/pr/en_visual_studio_2010_express_x86_dvd_510419.iso?t=e9342239-1935-4cfa-b4df-0b6bacafd391&e=1624405502&h=9bc2c1aa791aa48ecfd1a481f27400d8&su=1''"'
           cmd.exe /c '"C:\Program Files\Git\bin\bash.exe" --login -i -c "mv ''en_visual_studio_2010_express_x86_dvd_510419.iso'' ''/c/Users/$(whoami)/''"
           cmd.exe /c '7z.exe x "%USERPROFILE%\en_visual_studio_2010_express_x86_dvd_510419.iso" -o"%USERPROFILE%\en_visual_studio_2010_express_x86_dvd_510419"'
-          cmd.exe /c '"%USERPROFILE%\en_visual_studio_2010_express_x86_dvd_510419\VCExpress\setup.exe" /q /full /norestart'
+          cmd.exe /c ' "%USERPROFILE%\en_visual_studio_2010_express_x86_dvd_510419\VCExpress\setup.exe" /q /full /norestart '
 
       - uses: actions/checkout@v2
 
