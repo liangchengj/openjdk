@@ -5,7 +5,7 @@ on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
     tags:
-      - '*.*.*'
+      - "*.*.*"
 
 # on:
 #   push:
@@ -87,11 +87,17 @@ jobs:
       #         if: startsWith(matrix.os, 'ubuntu')
       #         run: make run-test-tier1
 
-      - name: Package JDK for macOS
+      - name: Package JDK Bundle for macOS
         if: startsWith(matrix.os, 'macos')
         run: |
           cp -rf build/*/images/jdk-bundle/*.jdk ./
-          tar -cvJf jdk-11-macos.tar.xz ./*.jdk
+          tar -cvJf jdk-bundle-11-macos.tar.xz ./*.jdk
+
+      - name: Package JDK for macOS
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          cp -rf build/*/images/jdk ./jdk-11.0.11
+          tar -cvJf jdk-11-macos.tar.xz ./jdk-11.0.11
 
       - name: Package JDK for Linux
         if: startsWith(matrix.os, 'ubuntu')
@@ -108,9 +114,9 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-#           name: feature_test
-#           tag_name: feature_test
-#           prerelease: true
+          #           name: feature_test
+          #           tag_name: feature_test
+          #           prerelease: true
           files: |
             jdk-11-*.tar.xz
         env:
