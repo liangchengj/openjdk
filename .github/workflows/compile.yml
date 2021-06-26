@@ -16,6 +16,8 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    env:
+      JDK_VERSION: 8
 
     # Platforms to build on/for
     strategy:
@@ -91,33 +93,33 @@ jobs:
 
       - name: Verify newly built JDK for macOS or Linux
         if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
-        run: ./build/*/images/j2sdk-image/jdk/bin/java -version
+        run: ./build/*/images/jdk/bin/java -version
 
       - name: Verify newly built JDK for Windows
         if: startsWith(matrix.os, 'windows')
-        run: cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && ./build/*/images/j2sdk-image/jdk/bin/java -version"'
+        run: cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && ./build/*/images/jdk/bin/java -version"'
 
-      #       - name: Run Basic Tests
-      #         if: startsWith(matrix.os, 'ubuntu')
-      #         run: make run-test-tier1
+      # - name: Run Basic Tests
+      #   if: startsWith(matrix.os, 'ubuntu')
+      #   run: make run-test-tier1
 
       - name: Package JDK for macOS
         if: startsWith(matrix.os, 'macos')
         run: |
-          cp -rf build/*/images/j2sdk-image/jdk-bundle/*.jdk ./
+          cp -rf build/*/images/jdk-bundle/*.jdk ./
           tar -cvJf jdk-8-macos.tar.xz ./*.jdk
 
       - name: Package JDK for Linux
         if: startsWith(matrix.os, 'ubuntu')
         run: |
-          cp -rf build/*/images/j2sdk-image/jdk ./jdk-8
-          tar -cvJf jdk-8-linux.tar.xz ./jdk-8
+          cp -rf build/*/images/jdk ./jdk-${{ env.JDK_VERSION }}
+          tar -cvJf jdk-8-linux.tar.xz ./jdk-${{ env.JDK_VERSION }}
 
       - name: Package JDK for Windows
         if: startsWith(matrix.os, 'windows')
         run: |
-          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && cp -rf build/*/images/j2sdk-image/jdk ./jdk-8"'
-          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && tar -cvJf jdk-8-windows.tar.xz ./jdk-8"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && cp -rf build/*/images/jdk ./jdk-${{ env.JDK_VERSION }}"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && tar -cvJf jdk-8-windows.tar.xz ./jdk-${{ env.JDK_VERSION }}"'
 
       - name: Release
         uses: softprops/action-gh-release@v1
