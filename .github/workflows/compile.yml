@@ -98,20 +98,20 @@ jobs:
       - name: Package JDK for macOS
         if: startsWith(matrix.os, 'macos')
         run: |
-          cp -rf build/*/images/jdk ./jdk-${{ JDK_VERSION }}
-          tar -cvJf jdk-11-macos.tar.xz ./jdk-${{ JDK_VERSION }}
+          cp -rf build/*/images/jdk ./jdk-${{ env.JDK_VERSION }}
+          tar -cvJf jdk-11-macos.tar.xz ./jdk-${{ env.JDK_VERSION }}
 
       - name: Package JDK for Linux
         if: startsWith(matrix.os, 'ubuntu')
         run: |
-          cp -rf build/*/images/jdk ./jdk-${{ JDK_VERSION }}
-          tar -cvJf jdk-11-linux.tar.xz ./jdk-${{ JDK_VERSION }}
+          cp -rf build/*/images/jdk ./jdk-${{ env.JDK_VERSION }}
+          tar -cvJf jdk-11-linux.tar.xz ./jdk-${{ env.JDK_VERSION }}
 
       - name: Package JDK for Windows
         if: startsWith(matrix.os, 'windows')
         run: |
-          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && cp -rf build/*/images/jdk ./jdk-${{ JDK_VERSION }}"'
-          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && tar -cvJf jdk-11-windows.tar.xz ./jdk-${{ JDK_VERSION }}"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && cp -rf build/*/images/jdk ./jdk-${{ env.JDK_VERSION }}"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && tar -cvJf jdk-11-windows.tar.xz ./jdk-${{ env.JDK_VERSION }}"'
 
       - name: Release
         uses: softprops/action-gh-release@v1
