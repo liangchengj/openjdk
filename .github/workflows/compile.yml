@@ -5,7 +5,7 @@ on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
     tags:
-      - '*.*.*'
+      - "*.*.*"
 
 # on:
 #   push:
@@ -16,6 +16,8 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    env:
+      JDK_VERSION: 11.0.12
 
     # Platforms to build on/for
     strategy:
@@ -87,30 +89,36 @@ jobs:
       #         if: startsWith(matrix.os, 'ubuntu')
       #         run: make run-test-tier1
 
-      - name: Package JDK for macOS
+      - name: Package JDK Bundle for macOS
         if: startsWith(matrix.os, 'macos')
         run: |
           cp -rf build/*/images/jdk-bundle/*.jdk ./
-          tar -cvJf jdk-11-macos.tar.xz ./*.jdk
+          tar -cvJf jdk-bundle-11-macos.tar.xz ./*.jdk
+
+      - name: Package JDK for macOS
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          cp -rf build/*/images/jdk ./jdk-${{ JDK_VERSION }}
+          tar -cvJf jdk-11-macos.tar.xz ./jdk-${{ JDK_VERSION }}
 
       - name: Package JDK for Linux
         if: startsWith(matrix.os, 'ubuntu')
         run: |
-          cp -rf build/*/images/jdk ./jdk-11.0.11
-          tar -cvJf jdk-11-linux.tar.xz ./jdk-11.0.11
+          cp -rf build/*/images/jdk ./jdk-${{ JDK_VERSION }}
+          tar -cvJf jdk-11-linux.tar.xz ./jdk-${{ JDK_VERSION }}
 
       - name: Package JDK for Windows
         if: startsWith(matrix.os, 'windows')
         run: |
-          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && cp -rf build/*/images/jdk ./jdk-11.0.11"'
-          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && tar -cvJf jdk-11-windows.tar.xz ./jdk-11.0.11"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && cp -rf build/*/images/jdk ./jdk-${{ JDK_VERSION }}"'
+          cmd.exe /c 'C:\cygwin\bin\bash.exe --login -i -c "cd $(cat ~/p_path) && tar -cvJf jdk-11-windows.tar.xz ./jdk-${{ JDK_VERSION }}"'
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-#           name: feature_test
-#           tag_name: feature_test
-#           prerelease: true
+          # name: feature_test
+          # tag_name: feature_test
+          # prerelease: true
           files: |
             jdk-11-*.tar.xz
         env:
